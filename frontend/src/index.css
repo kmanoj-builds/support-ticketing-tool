@@ -1,0 +1,168 @@
+
+@import "tailwindcss";
+
+/* ----------------------------------
+   ResolveDesk — Design Foundation
+----------------------------------- */
+
+@theme {
+  /* Brand */
+  --color-brand-50: #eff4f9;
+  --color-brand-100: #dce7f2;
+  --color-brand-500: #31577f;
+  --color-brand-600: #1e3a5f;
+  --color-brand-700: #172f4d;
+
+  /* Neutral */
+  --color-surface: #ffffff;
+  --color-page: #f5f7fa;
+  --color-border: #e2e8f0;
+
+  --color-text-primary: #1e293b;
+  --color-text-secondary: #64748b;
+  --color-text-muted: #94a3b8;
+
+  /* Semantic */
+  --color-success: #15803d;
+  --color-success-bg: #f0fdf4;
+
+  --color-warning: #d97706;
+  --color-warning-bg: #fffbeb;
+
+  --color-danger: #dc2626;
+  --color-danger-bg: #fef2f2;
+
+  --color-info: #2563eb;
+  --color-info-bg: #eff6ff;
+
+  /* Typography */
+  --font-sans: "Inter", "Segoe UI", sans-serif;
+
+  /* Radius */
+  --radius-card: 0.75rem;
+}
+
+/* ----------------------------------
+   Browser Reset
+----------------------------------- */
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  min-width: 320px;
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+
+  background: var(--color-page);
+  color: var(--color-text-primary);
+
+  font-family: var(--font-sans);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* ----------------------------------
+   Typography
+----------------------------------- */
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+  margin: 0;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: not-allowed;
+}
+
+a {
+  text-decoration: none;
+}
+
+/* ----------------------------------
+   Accessibility
+----------------------------------- */
+
+:focus-visible {
+  outline: 2px solid var(--color-brand-500);
+  outline-offset: 2px;
+}
+
+::selection {
+  background: var(--color-brand-100);
+  color: var(--color-brand-700);
+}
+
+/* ----------------------------------
+   Scrollbar
+----------------------------------- */
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e1 transparent;
+}
+
+*::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 999px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* ----------------------------------
+   Form Elements
+----------------------------------- */
+
+input,
+textarea,
+select {
+  color: var(--color-text-primary);
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: var(--color-text-muted);
+}
+
+textarea {
+  resize: vertical;
+}
+
+/* ----------------------------------
+   Layout Helpers
+----------------------------------- */
+
+#root {
+  min-height: 100vh;
+}
