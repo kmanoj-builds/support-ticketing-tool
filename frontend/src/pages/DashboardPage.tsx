@@ -1,35 +1,40 @@
-import { Ticket, Inbox, Clock3, CheckCircle2, Plus } from "lucide-react";
+
+import {
+  Ticket,
+  Inbox,
+  Clock3,
+  CheckCircle2,
+  Plus,
+} from "lucide-react";
+
 import { Link } from "react-router";
+
+import { useAppSelector } from "../app/hooks";
+import {
+  selectAllTickets,
+  selectTicketStats,
+} from "../features/tickets/ticketsSelectors";
 
 import StatCard from "../components/dashboard/StatCard";
 import RecentTickets from "../components/dashboard/RecentTickets";
-import { mockTickets } from "../data/mockTickets";
 
 export default function DashboardPage() {
-  const totalTickets = mockTickets.length;
+  // Read ticket data from Redux store
+  const tickets = useAppSelector(selectAllTickets);
+  const stats = useAppSelector(selectTicketStats);
 
-  const openTickets = mockTickets.filter(
-    (ticket) => ticket.status === "OPEN",
-  ).length;
-
-  const inProgressTickets = mockTickets.filter(
-    (ticket) => ticket.status === "IN_PROGRESS",
-  ).length;
-
-  const closedTickets = mockTickets.filter(
-    (ticket) => ticket.status === "CLOSED",
-  ).length;
-
-  const recentTickets = [...mockTickets]
+  // Get the five most recently created tickets
+  const recentTickets = [...tickets]
     .sort(
       (a, b) =>
-        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+        new Date(b.createdAt).getTime() -
+        new Date(a.createdAt).getTime()
     )
     .slice(0, 5);
 
   return (
     <div className="space-y-6">
-      {/* Page heading */}
+      {/* Page Heading */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-2xl font-semibold tracking-tight text-text-primary">
@@ -50,11 +55,11 @@ export default function DashboardPage() {
         </Link>
       </div>
 
-      {/* Statistics */}
+      {/* Ticket Statistics */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <StatCard
           title="Total Tickets"
-          value={totalTickets}
+          value={stats.total}
           icon={Ticket}
           iconColor="text-brand-600"
           iconBackground="bg-brand-50"
@@ -62,7 +67,7 @@ export default function DashboardPage() {
 
         <StatCard
           title="Open Tickets"
-          value={openTickets}
+          value={stats.open}
           icon={Inbox}
           iconColor="text-amber-600"
           iconBackground="bg-amber-50"
@@ -70,7 +75,7 @@ export default function DashboardPage() {
 
         <StatCard
           title="In Progress"
-          value={inProgressTickets}
+          value={stats.inProgress}
           icon={Clock3}
           iconColor="text-blue-600"
           iconBackground="bg-blue-50"
@@ -78,14 +83,14 @@ export default function DashboardPage() {
 
         <StatCard
           title="Closed Tickets"
-          value={closedTickets}
+          value={stats.closed}
           icon={CheckCircle2}
           iconColor="text-green-600"
           iconBackground="bg-green-50"
         />
       </div>
 
-      {/* Recent tickets */}
+      {/* Recent Tickets */}
       <RecentTickets tickets={recentTickets} />
     </div>
   );

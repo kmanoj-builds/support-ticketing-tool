@@ -1,4 +1,4 @@
-import { NavLink } from "react-router";
+import { NavLink, useLocation } from "react-router";
 import { LayoutDashboard, Ticket, PlusCircle, LifeBuoy } from "lucide-react";
 
 const navigation = [
@@ -20,6 +20,8 @@ const navigation = [
 ];
 
 export default function Sidebar() {
+  const location = useLocation();
+
   return (
     <aside className="fixed inset-y-0 left-0 z-40 hidden w-64 flex-col border-r border-slate-200 bg-white md:flex">
       {/* Brand */}
@@ -50,13 +52,20 @@ export default function Sidebar() {
               key={item.path}
               to={item.path}
               end
-              className={({ isActive }) =>
-                `flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${
-                  isActive
+              className={({ isActive }) => {
+                const isTicketsSection =
+                  item.path === "/tickets" &&
+                  location.pathname.startsWith("/tickets/") &&
+                  location.pathname !== "/tickets/create";
+
+                const active = isActive || isTicketsSection;
+
+                return `flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${
+                  active
                     ? "bg-brand-50 text-brand-700"
                     : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
-                }`
-              }
+                }`;
+              }}
             >
               <Icon size={19} strokeWidth={1.8} />
               {item.label}
