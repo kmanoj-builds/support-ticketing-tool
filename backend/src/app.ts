@@ -3,6 +3,9 @@ import cors from "cors";
 
 import ticketRoutes from "./routes/ticket.routes.js";
 
+import { notFoundHandler } from "./middlewares/notFound.middleware.js";
+import { errorHandler } from "./middlewares/error.middleware.js";
+
 const app = express();
 
 // Middleware
@@ -26,5 +29,9 @@ app.get("/api/health", (_req, res) => {
 });
 
 app.use("/api/tickets", ticketRoutes);
+
+// ERROR HANDLING
+app.use(notFoundHandler);
+app.use(errorHandler);
 
 export default app;
