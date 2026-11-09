@@ -1,4 +1,3 @@
-
 import { randomUUID } from "node:crypto";
 
 import type { Ticket } from "../types/ticket.js";
@@ -31,5 +30,38 @@ export const ticketService = {
   // Get a ticket by ID
   getById(id: string): Ticket | undefined {
     return tickets.find((ticket) => ticket.id === id);
+  },
+
+  update(id: string, data: TicketInput): Ticket | undefined {
+    const index = tickets.findIndex((ticket) => ticket.id === id);
+
+    if (index === -1) {
+      return undefined;
+    }
+
+    const existingTicket = tickets[index];
+
+    const updatedTicket: Ticket = {
+      id,
+      ...data,
+      createdAt: existingTicket.createdAt,
+      updatedAt: new Date().toISOString(),
+    };
+
+    tickets[index] = updatedTicket;
+
+    return updatedTicket;
+  },
+
+  delete(id: string): boolean {
+    const index = tickets.findIndex((ticket) => ticket.id === id);
+
+    if (index === -1) {
+      return false;
+    }
+
+    tickets.splice(index, 1);
+
+    return true;
   },
 };

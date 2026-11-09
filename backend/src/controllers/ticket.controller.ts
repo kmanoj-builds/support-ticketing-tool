@@ -49,4 +49,51 @@ export const ticketController = {
       data: ticket,
     });
   },
+
+  update(req: Request<{ id: string }>, res: Response) {
+    // Validate the incoming request body
+    const result = ticketSchema.safeParse(req.body);
+
+    if (!result.success) {
+      return res.status(400).json({
+        success: false,
+        message: "Validation failed",
+        errors: result.error.flatten().fieldErrors,
+      });
+    }
+
+    // Update the ticket
+    const ticket = ticketService.update(req.params.id, result.data);
+
+    // Handle ticket not found
+    if (!ticket) {
+      return res.status(404).json({
+        success: false,
+        message: "Ticket not found",
+      });
+    }
+
+    // Return updated ticket
+    return res.status(200).json({
+      success: true,
+      message: "Ticket updated successfully",
+      data: ticket,
+    });
+  },
+
+  delete(req: Request<{ id: string }>, res: Response) {
+    const deleted = ticketService.delete(req.params.id);
+
+    if (!deleted) {
+      return res.status(404).json({
+        success: false,
+        message: "Ticket not found",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Ticket deleted successfully",
+    });
+  },
 };
