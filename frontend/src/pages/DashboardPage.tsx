@@ -1,36 +1,64 @@
-
-import {
-  Ticket,
-  Inbox,
-  Clock3,
-  CheckCircle2,
-  Plus,
-} from "lucide-react";
+import { Ticket, Inbox, Clock3, CheckCircle2, Plus } from "lucide-react";
 
 import { Link } from "react-router";
 
-import { useAppSelector } from "../app/hooks";
+import { useEffect } from "react";
+
+import { useAppDispatch, useAppSelector } from "../app/hooks";
+
+import { fetchTickets } from "../features/tickets/ticketsSlice";
+
 import {
   selectAllTickets,
   selectTicketStats,
+  selectTicketsLoading,
+  selectTicketsError,
 } from "../features/tickets/ticketsSelectors";
 
 import StatCard from "../components/dashboard/StatCard";
 import RecentTickets from "../components/dashboard/RecentTickets";
 
 export default function DashboardPage() {
-  // Read ticket data from Redux store
+  const dispatch = useAppDispatch();
+
   const tickets = useAppSelector(selectAllTickets);
   const stats = useAppSelector(selectTicketStats);
+  const loading = useAppSelector(selectTicketsLoading);
+  const error = useAppSelector(selectTicketsError);
 
-  // Get the five most recently created tickets
+  useEffect(() => {
+    dispatch(fetchTickets());
+  }, [dispatch]);
+
   const recentTickets = [...tickets]
     .sort(
       (a, b) =>
-        new Date(b.createdAt).getTime() -
-        new Date(a.createdAt).getTime()
+        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
     )
     .slice(0, 5);
+
+  if (loading && tickets.length === 0) {
+    return (
+      <div className="flex min-h-75 items-center justify-center">
+        <p className="text-sm text-muted-foreground">Loading dashboard...</p>
+      </div>
+    );
+  }
+
+  if (error && tickets.length === 0) {
+    return (
+      <div className="flex min-h-75 flex-col items-center justify-center gap-3">
+        <p className="text-sm text-red-500">{error}</p>
+
+        <button
+          onClick={() => dispatch(fetchTickets())}
+          className="rounded-md bg-primary px-4 py-2 text-sm text-primary-foreground"
+        >
+          Retry
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
