@@ -10,6 +10,8 @@ export const ticketSchema = z.object({
   status: z.enum(["OPEN", "IN_PROGRESS", "CLOSED"]),
 
   category: z.enum(["TECHNICAL", "PAYMENT", "ACCOUNT", "GENERAL"]),
+
+  requesterName: z.string().trim().min(2).max(100),
 });
 
 export type TicketInput = z.infer<typeof ticketSchema>;

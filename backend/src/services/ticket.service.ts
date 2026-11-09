@@ -1,67 +1,43 @@
-import { randomUUID } from "node:crypto";
-
+import { TicketModel } from "../models/ticket.model.js";
 import type { Ticket } from "../types/ticket.js";
 import type { TicketInput } from "../schemas/ticket.schema.js";
 
-const tickets: Ticket[] = [];
-
 export const ticketService = {
-  // Create a ticket
-  create(data: TicketInput): Ticket {
-    const now = new Date().toISOString();
+  // Create a new ticket
+  async create(input: TicketInput): Promise<Ticket> {
+    const ticket = await TicketModel.create(input);
 
-    const ticket: Ticket = {
-      id: randomUUID(),
-      ...data,
-      createdAt: now,
-      updatedAt: now,
-    };
-
-    tickets.unshift(ticket);
-
-    return ticket;
+    return ticket.toJSON() as unknown as Ticket;
   },
 
   // Get all tickets
-  getAll(): Ticket[] {
-    return tickets;
+  async getAll(): Promise<Ticket[]> {
+    const tickets = await TicketModel.find().sort({ createdAt: -1 }).exec();
+
+    return tickets.map((ticket) => ticket.toJSON() as unknown as Ticket);
   },
 
   // Get a ticket by ID
-  getById(id: string): Ticket | undefined {
-    return tickets.find((ticket) => ticket.id === id);
+  async getById(id: string): Promise<Ticket | null> {
+    const ticket = await TicketModel.findById(id);
+
+    return ticket ? (ticket.toJSON() as unknown as Ticket) : null;
   },
 
-  update(id: string, data: TicketInput): Ticket | undefined {
-    const index = tickets.findIndex((ticket) => ticket.id === id);
+  // Update a ticket
+  async update(id: string, input: TicketInput): Promise<Ticket | null> {
+    const ticket = await TicketModel.findByIdAndUpdate(id, input, {
+      new: true,
+      runValidators: true,
+    });
 
-    if (index === -1) {
-      return undefined;
-    }
-
-    const existingTicket = tickets[index];
-
-    const updatedTicket: Ticket = {
-      id,
-      ...data,
-      createdAt: existingTicket.createdAt,
-      updatedAt: new Date().toISOString(),
-    };
-
-    tickets[index] = updatedTicket;
-
-    return updatedTicket;
+    return ticket ? (ticket.toJSON() as unknown as Ticket) : null;
   },
 
-  delete(id: string): boolean {
-    const index = tickets.findIndex((ticket) => ticket.id === id);
+  // Delete a ticket
+  async delete(id: string): Promise<boolean> {
+    const ticket = await TicketModel.findByIdAndDelete(id);
 
-    if (index === -1) {
-      return false;
-    }
-
-    tickets.splice(index, 1);
-
-    return true;
+    return ticket !== null;
   },
 };
